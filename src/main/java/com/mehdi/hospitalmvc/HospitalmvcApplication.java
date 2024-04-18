@@ -22,9 +22,9 @@ public class HospitalmvcApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        patientRepository.save(new Patient(null,"Yassine",new Date(),false,123));
-        patientRepository.save(new Patient(null,"Amine",new Date(),true,123));
-        patientRepository.save(new Patient(null,"Hanane",new Date(),false,123));
+//        patientRepository.save(new Patient(null,"Yassine",new Date(),false,123));
+//        patientRepository.save(new Patient(null,"Amine",new Date(),true,123));
+//        patientRepository.save(new Patient(null,"Hanane",new Date(),false,123));
         // En utilisant Builder
         Patient patient1 = Patient.builder()
                 .nom("Aziz")

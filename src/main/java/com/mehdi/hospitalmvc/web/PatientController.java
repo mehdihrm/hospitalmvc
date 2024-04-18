@@ -1,5 +1,6 @@
 package com.mehdi.hospitalmvc.web;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import com.mehdi.hospitalmvc.entities.Patient;
 import com.mehdi.hospitalmvc.repository.PatientRepository;
@@ -7,9 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -44,5 +46,36 @@ public class PatientController {
     @GetMapping("/")
     public String home(){
         return "redirect:/index";
+    }
+
+    @GetMapping("/patients")
+    @ResponseBody
+    public List<Patient> listPatients(){
+        return patientRepository.findAll();
+    }
+     @GetMapping("/formPatients")
+    public String formPatient(Model model){
+        model.addAttribute("patient",new Patient());
+        return "formPatients";
+    }
+    @PostMapping(path="/save")
+    public String save(Model model, @Valid Patient patient, BindingResult bindingResult,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "") String keyword){
+        if(bindingResult.hasErrors()) return "formPatients";
+    patientRepository.save(patient);
+    return "redirect:/index?page="+page+"&keyword="+keyword;
+    }
+
+    @GetMapping("/editPatient")
+    public String editPatient(Model model,Long id,
+                              @RequestParam(defaultValue = "") String keyword,
+                              @RequestParam(defaultValue = "0") int page){
+        Patient patient = patientRepository.findById(id).orElse(null)   ;
+        if(patient == null) throw new RuntimeException("Patient Introuvable");
+        model.addAttribute("patient",patient);
+        model.addAttribute("page",page);
+        model.addAttribute("keyword",keyword);
+        return "editPatient";
     }
 }
