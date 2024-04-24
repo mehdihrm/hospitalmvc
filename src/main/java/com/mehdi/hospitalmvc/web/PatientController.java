@@ -18,7 +18,7 @@ import java.util.List;
 public class PatientController {
     private PatientRepository patientRepository;
 
-    @GetMapping("/index")
+    @GetMapping("/user/index")
     public String index(Model model,
                         @RequestParam(name = "page", defaultValue = "0") int page,
                         @RequestParam(name = "size",defaultValue = "4") int size,
@@ -35,17 +35,17 @@ public class PatientController {
     }
 
 
-    @GetMapping("/delete")
+    @GetMapping("/admin/deletePatient")
     public String delete(@RequestParam(name = "id") Long id,
                          @RequestParam(name = "keyword", defaultValue = "")String keyword,
                          @RequestParam(name = "page", defaultValue = "0") int page){
         patientRepository.deleteById(id);
-        return "redirect:/index?page"+page+"&keyword="+keyword;
+        return "redirect:/user/index?page"+page+"&keyword="+keyword;
     }
 
     @GetMapping("/")
     public String home(){
-        return "redirect:/index";
+        return "redirect:/user/index";
     }
 
     @GetMapping("/patients")
@@ -53,21 +53,21 @@ public class PatientController {
     public List<Patient> listPatients(){
         return patientRepository.findAll();
     }
-     @GetMapping("/formPatients")
+     @GetMapping("/admin/formPatients")
     public String formPatient(Model model){
         model.addAttribute("patient",new Patient());
         return "formPatients";
     }
-    @PostMapping(path="/save")
+    @PostMapping(path="/admin/save")
     public String save(Model model, @Valid Patient patient, BindingResult bindingResult,
                        @RequestParam(defaultValue = "0") int page,
                        @RequestParam(defaultValue = "") String keyword){
         if(bindingResult.hasErrors()) return "formPatients";
     patientRepository.save(patient);
-    return "redirect:/index?page="+page+"&keyword="+keyword;
+    return "redirect:/user/index?page="+page+"&keyword="+keyword;
     }
 
-    @GetMapping("/editPatient")
+    @GetMapping("/admin/editPatient")
     public String editPatient(Model model,Long id,
                               @RequestParam(defaultValue = "") String keyword,
                               @RequestParam(defaultValue = "0") int page){
